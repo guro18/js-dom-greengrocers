@@ -147,7 +147,12 @@ function renderCart() {
   
   // Clear the existing content of the cart
   cartItemList.innerHTML = "";
-  
+
+  //set total to equal 0 if no item is in the cart
+  const total = 0;
+  const totalElement = document.querySelector(".total-number");
+  totalElement.textContent = "£" + total.toFixed(2);
+
   // Loop through the items in the cart
   state.cart.forEach(item => {
 
@@ -192,7 +197,6 @@ function renderCart() {
     cartItemList.appendChild(cartItem);
 
   // Update the total displayed on the webpage
-  const totalElement = document.querySelector(".total-number");
   const total = state.total.reduce((total, currentValue) => 
   total + currentValue, 0);
   totalElement.textContent = "£" + total.toFixed(2);
