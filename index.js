@@ -51,8 +51,7 @@ const state = {
       price: 0.35
     }
   ],
-  cart: [],
-  total: [],
+  cart: []
 };
 
 // Function to add item to cart
@@ -73,33 +72,29 @@ function addToCart(index) {
     state.cart.push(newItem);
   }
 
-  //increase total price
-  state.total.push(newItem.price);
-  const sum = state.total.reduce((total, currentValue) => 
-  total + currentValue, 0);
   renderCart() //update cart
 }
 
 //function to increase quantity
 function increaseQuantity(item) {
   item.quantity++;
-  state.total.push(item.price);
-  renderCart(); //update the cart display
+  renderCart(); //update cart
 }
 
 //function to decrease quantity
 function decreaseQuantity(item) {
-  if (item.quantity === 1)
+  const itemIndex = state.cart.indexOf(item);
+  if (itemIndex !== -1) //check if item exists in cart
   {
-    state.cart.pop(item);
-    state.total.pop(item.price);
-  } else
-
-  {
-    item.quantity--;
-    state.total.pop(item.price);
+    if (item.quantity === 1)
+      {
+        state.cart.splice(itemIndex, 1);
+      } else 
+      {
+        item.quantity--;
+      }
   }
-  renderCart();//update cart
+  renderCart(); //update cart
 }
 
 //loop through the itemsList
@@ -148,11 +143,6 @@ function renderCart() {
   // Clear the existing content of the cart
   cartItemList.innerHTML = "";
 
-  //set total to equal 0 if no item is in the cart
-  const total = 0;
-  const totalElement = document.querySelector(".total-number");
-  totalElement.textContent = "£" + total.toFixed(2);
-
   // Loop through the items in the cart
   state.cart.forEach(item => {
 
@@ -195,11 +185,16 @@ function renderCart() {
 
     // Append the cart item to the cart item list
     cartItemList.appendChild(cartItem);
-
-  // Update the total displayed on the webpage
-  const total = state.total.reduce((total, currentValue) => 
-  total + currentValue, 0);
-  totalElement.textContent = "£" + total.toFixed(2);
-  console.log(total);
   });
+
+  //find the totalElement
+  const totalElement = document.querySelector(".total-number");
+  
+  //calculate the total price outside the loop:
+  //defaultprice of 0, otherwise loop through the cart and calculate
+  let totalPrice = 0;
+  state.cart.forEach(item => {
+    totalPrice += item.price * parseFloat(item.quantity);
+  })
+  totalElement.textContent = "£" + totalPrice.toFixed(2);
 }
