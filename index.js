@@ -84,6 +84,23 @@ function updateDisplayedItems(newItems) {
 
   //clear the current store item list
   const itemList = document.querySelector(".item-list.store--item-list");
+
+    //create new sortbutton if does'nt exists
+    let sortButton = document.querySelector("#sortButton");
+    if (!sortButton) {
+      sortButton = document.createElement("button");
+      sortButton.id = "sortButton";
+      sortButton.textContent = "Sort";
+
+      sortButton.addEventListener("click", () => {
+        state.items.sort((a, b) => a.name.localeCompare(b.name));
+        updateDisplayedItems(state.items);
+      });
+  
+      itemList.parentNode.insertBefore(sortButton, itemList);
+  }
+
+  //clear existing items
   itemList.innerHTML = "";
 
   //loop through the itemsList
