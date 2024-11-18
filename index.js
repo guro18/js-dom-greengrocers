@@ -1,57 +1,38 @@
 const state = {
-  items: [
-    {
-      id: "001-beetroot",
-      name: "beetroot",
-      price: 0.35
-    },
-    {
-      id: "002-carrot",
-      name: "carrot",
-      price: 0.35
-    },
-    {
-      id: "003-apple",
-      name: "apple",
-      price: 0.35
-    },
-    {
-      id: "004-apricot",
-      name: "apricot",
-      price: 0.35
-    },
-    {
-      id: "005-avocado",
-      name: "avocado",
-      price: 0.35
-    },
-    {
-      id: "006-bananas",
-      name: "bananas",
-      price: 0.35
-    },
-    {
-      id: "007-bell-pepper",
-      name: "bell pepper",
-      price: 0.35
-    },
-    {
-      id: "008-berry",
-      name: "berry",
-      price: 0.35
-    },
-    {
-      id: "009-blueberry",
-      name: "blueberry",
-      price: 0.35
-    },
-    {
-      id: "010-eggplant",
-      name: "eggplant",
-      price: 0.35
-    }
+  items: [],
+  cart: [],
+
+  allItems: [
+    { id: "001-beetroot", name: "beetroot", price: 0.35 },
+    { id: "002-carrot", name: "carrot", price: 0.35 },
+    { id: "003-apple", name: "apple", price: 0.35 },
+    { id: "004-apricot", name: "apricot", price: 0.35 },
+    { id: "005-avocado", name: "avocado", price: 0.35 },
+    { id: "006-bananas", name: "bananas", price: 0.35 },
+    { id: "007-bell-pepper", name: "bell pepper", price: 0.35 },
+    { id: "008-berry", name: "berry", price: 0.35 },
+    { id: "009-blueberry", name: "blueberry", price: 0.35 },
+    { id: "010-eggplant", name: "eggplant", price: 0.35 }
   ],
-  cart: []
+
+  fruits: [
+    { id: "003-apple", name: "apple", price: 0.35 },
+    { id: "004-apricot", name: "apricot", price: 0.35 },
+    { id: "006-bananas", name: "bananas", price: 0.35 }
+  ],
+
+  vegitables: [
+    { id: "001-beetroot", name: "beetroot", price: 0.35 },
+    { id: "002-carrot", name: "carrot", price: 0.35 },
+    { id: "005-avocado", name: "avocado", price: 0.35 },
+    { id: "007-bell-pepper", name: "bell pepper", price: 0.35 },
+    { id: "010-eggplant", name: "eggplant", price: 0.35 }
+  ],
+
+  berries: [
+    { id: "008-berry", name: "berry", price: 0.35 },
+    { id: "009-blueberry", name: "blueberry", price: 0.35 }
+  ]
 };
 
 // Function to add item to cart
@@ -63,7 +44,7 @@ function addToCart(index) {
   //check if item already exists
   const existingItemIndex = state.cart.findIndex(item => item.id === newItem.id);
 
-  if (existingItemIndex !== -1) 
+  if (existingItemIndex !== -1)
   { //increase quantity if item is already in cart
     state.cart[existingItemIndex].quantity++;
   } else
@@ -94,49 +75,72 @@ function decreaseQuantity(item) {
         item.quantity--;
       }
   }
+
   renderCart(); //update cart
 }
 
-//loop through the itemsList
-for (let i = 0; i < state.items.length; i++)
-{
-  //create new item
-  const storeItem = document.createElement("li");
+function updateDisplayedItems(newItems) {
+  state.items = newItems;
 
-  //create div for store item icon
-  const storeItemDiv = document.createElement("div");
-  storeItemDiv.classList.add("store--item-icon")
+  //clear the current store item list
+  const itemList = document.querySelector(".item-list.store--item-list");
+  itemList.innerHTML = "";
 
-  //create img element for the icon
-  const storeItemImg = document.createElement("img");
-  storeItemImg.src = "assets/icons/" + state.items[i].id + ".svg";
-  storeItemImg.alt = state.items[i].name; //loop
+  //loop through the itemsList
+  for (let i = 0; i < state.items.length; i++)
+  {
+    //create new item
+    const storeItem = document.createElement("li");
 
-  //append the img element to div
-  storeItemDiv.appendChild(storeItemImg);
+    //create div for store item icon
+    const storeItemDiv = document.createElement("div");
+    storeItemDiv.classList.add("store--item-icon")
 
-  //create button
-  const addButton = document.createElement("button");
-  addButton.textContent = "Add to cart";
+    //create img element for the icon
+    const storeItemImg = document.createElement("img");
+    storeItemImg.src = "assets/icons/" + state.items[i].id + ".svg";
+    storeItemImg.alt = state.items[i].name; //loop
 
-  // Add event listener to "Add to cart" button
-  addButton.addEventListener("click", () => {
-    addToCart(i);
-  });
+    //append the img element to div
+    storeItemDiv.appendChild(storeItemImg);
 
-  //append icon div and button to item
-  storeItem.appendChild(storeItemDiv);
-  storeItem.appendChild(addButton);
+    //create button
+    const addButton = document.createElement("button");
+    addButton.textContent = "Add to cart";
 
-  //find the element to put storeItem
-  var itemList = document.querySelector(".item-list.store--item-list");
+    // Add event listener to "Add to cart" button
+    addButton.addEventListener("click", () => {
+      addToCart(i);
+    });
 
-  //append the list item to the item list
-  itemList.appendChild(storeItem);
+    //append icon div and button to item
+    storeItem.appendChild(storeItemDiv);
+    storeItem.appendChild(addButton);
+
+    //append the list item to the item list
+    itemList.appendChild(storeItem);
+  }
 }
+
+//add eventlisteners for all buttons
+document.querySelector("header button:nth-of-type(1)").addEventListener("click", 
+  () =>  {updateDisplayedItems(state.allItems); });
+
+document.querySelector("header button:nth-of-type(2)").addEventListener("click", 
+  () =>  {updateDisplayedItems(state.fruits); });
+
+document.querySelector("header button:nth-of-type(3)").addEventListener("click", 
+  () =>  {updateDisplayedItems(state.vegitables); });
+
+document.querySelector("header button:nth-of-type(4)").addEventListener("click", 
+  () =>  {updateDisplayedItems(state.berries); });
+
+//have all items displayed as default
+updateDisplayedItems(state.allItems);
 
 //function to render cart
 function renderCart() {
+
   // Find the cart item list
   const cartItemList = document.querySelector(".item-list.cart--item-list");
   
